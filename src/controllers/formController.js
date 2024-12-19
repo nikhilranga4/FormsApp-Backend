@@ -51,8 +51,27 @@ const getAllForms = async (req, res) => {
   }
 };
 
+// Delete a form by its ID
+const deleteForm = async (req, res) => {
+  const { formId } = req.params;  // Extract formId from the URL
+
+  try {
+    const deletedForm = await Form.findByIdAndDelete(formId);
+
+    if (!deletedForm) {
+      return res.status(404).json({ message: 'Form not found' });
+    }
+
+    res.status(200).json({ message: 'Form deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error deleting form' });
+  }
+};
+
 module.exports = {
   createForm,
   addQuestionsToForm,
   getAllForms,
+  deleteForm,  // Export the deleteForm function
 };
