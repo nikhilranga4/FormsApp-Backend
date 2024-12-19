@@ -53,7 +53,7 @@ const getAllForms = async (req, res) => {
 
 // Delete a form by its ID
 const deleteForm = async (req, res) => {
-  const { formId } = req.params;  // Extract formId from the URL
+  const { formId } = req.params;
 
   try {
     const deletedForm = await Form.findByIdAndDelete(formId);
@@ -69,9 +69,58 @@ const deleteForm = async (req, res) => {
   }
 };
 
+// Duplicate a form by creating a copy of the form
+const duplicateForm = async (req, res) => {
+  const { formId } = req.body;
+
+  try {
+    const form = await Form.findById(formId);
+
+    if (!form) {
+      return res.status(404).json({ message: 'Form not found' });
+    }
+
+    // Create a copy of the form
+    const newForm = new Form({
+      ...form.toObject(), // Duplicate the form's data
+      title: `${form.title} (Copy)`, // Modify the title to indicate it's a copy
+    });
+
+    const savedForm = await newForm.save();
+    res.status(201).json(savedForm);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error duplicating form' });
+  }
+};
+
+// Get the public URL for a form (example for cloud storage or simple path)
+const getPublicUrl = async (req, res) => {
+  const { formId } = req.params;
+
+  try {
+    const form = await Form.findById(formId);
+
+    if (!form) {
+      return res.status(404).json({ message: 'Form not found' });
+    }
+
+    // Generate a public URL for the form (depending on your app's setup)
+    // This is just an example assuming forms are publicly accessible by ID
+    const publicUrl = `${process.env.BASE_URL}/forms/${form._id}`;
+
+    res.status(200).json({ publicUrl });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error generating public URL' });
+  }
+};
+
 module.exports = {
   createForm,
   addQuestionsToForm,
   getAllForms,
-  deleteForm,  // Export the deleteForm function
+  deleteForm,
+  duplicateForm,  // Export the duplicateForm function
+  getPublicUrl,    // Export the getPublicUrl function
 };
