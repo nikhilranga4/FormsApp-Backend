@@ -71,7 +71,7 @@ const deleteForm = async (req, res) => {
 
 // Duplicate a form by creating a copy of the form
 const duplicateForm = async (req, res) => {
-  const { formId } = req.params;  // Use req.params instead of req.body for URL parameters
+  const { formId } = req.body; // Expect formId in the body for the duplicate form request
 
   if (!formId) {
     return res.status(400).json({ message: 'Form ID is required' });
