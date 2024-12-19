@@ -13,14 +13,14 @@ const createForm = async (req, res) => {
     });
 
     const savedForm = await newForm.save();
-    res.status(201).json(savedForm);
+    res.status(201).json(savedForm); // Return the created form as the response
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error creating form' });
   }
 };
 
-// Add questions to a form
+// Add questions to an existing form
 const addQuestionsToForm = async (req, res) => {
   const { formId, questions } = req.body;
 
@@ -31,9 +31,9 @@ const addQuestionsToForm = async (req, res) => {
       return res.status(404).json({ message: 'Form not found' });
     }
 
-    form.questions.push(...questions);
+    form.questions.push(...questions); // Add the new questions to the existing ones
     await form.save();
-    res.status(200).json(form);
+    res.status(200).json(form); // Return the updated form
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error adding questions' });
@@ -44,7 +44,7 @@ const addQuestionsToForm = async (req, res) => {
 const getAllForms = async (req, res) => {
   try {
     const forms = await Form.find();
-    res.status(200).json(forms);
+    res.status(200).json(forms); // Return all forms
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error retrieving forms' });
@@ -62,7 +62,7 @@ const deleteForm = async (req, res) => {
       return res.status(404).json({ message: 'Form not found' });
     }
 
-    res.status(200).json({ message: 'Form deleted successfully' });
+    res.status(200).json({ message: 'Form deleted successfully' }); // Return success message
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error deleting form' });
@@ -113,7 +113,7 @@ const getPublicUrl = async (req, res) => {
     // Generate a public URL for the form (depending on your app's setup)
     const publicUrl = `${process.env.BASE_URL}/forms/${form._id}`;
 
-    res.status(200).json({ publicUrl });
+    res.status(200).json({ publicUrl }); // Return the generated URL
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error generating public URL' });
