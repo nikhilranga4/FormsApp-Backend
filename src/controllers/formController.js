@@ -71,7 +71,7 @@ const deleteForm = async (req, res) => {
 
 // Duplicate a form by creating a copy of the form
 const duplicateForm = async (req, res) => {
-  const { formId } = req.body; // Expect formId in the body for the duplicate form request
+  const { formId } = req.params;  // Expecting formId in the URL, not body
 
   if (!formId) {
     return res.status(400).json({ message: 'Form ID is required' });
@@ -84,14 +84,15 @@ const duplicateForm = async (req, res) => {
       return res.status(404).json({ message: 'Form not found' });
     }
 
-    // Create a copy of the form
+    // Create a copy of the form, excluding the _id field
     const newForm = new Form({
-      ...form.toObject(), // Duplicate the form's data
-      title: `${form.title} (Copy)`, // Modify the title to indicate it's a copy
+      ...form.toObject(),  // Duplicate the form's data
+      _id: undefined,  // Remove the original _id so MongoDB generates a new one
+      title: `${form.title} (Copy)`,  // Modify the title to indicate it's a copy
     });
 
     const savedForm = await newForm.save();
-    res.status(201).json(savedForm);
+    res.status(201).json(savedForm);  // Return the duplicated form
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error duplicating form' });
@@ -110,7 +111,6 @@ const getPublicUrl = async (req, res) => {
     }
 
     // Generate a public URL for the form (depending on your app's setup)
-    // This is just an example assuming forms are publicly accessible by ID
     const publicUrl = `${process.env.BASE_URL}/forms/${form._id}`;
 
     res.status(200).json({ publicUrl });
